@@ -1,0 +1,11 @@
+Hello from OpenAgua,
+
+Your password has been changed
+{% if security.recoverable %}
+If you did not change your password, click the link below to reset it.
+{{ url_for_security('forgot_password', _external=True) }}
+{% endif %}
+
+With best wishes,
+
+The OpenAgua team

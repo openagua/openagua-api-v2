@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<p>{{ _("Here is the confirmation link you requested:") }}</p>
+
+<p><a href="{{ confirmation_link }}">{{ _("Confirm my account") }}</a></p>
+
+<br/>
+
+{% endblock %}

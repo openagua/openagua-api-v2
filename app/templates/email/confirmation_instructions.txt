@@ -1,0 +1,9 @@
+Hello again,
+
+Here is the confirmation link you requested:
+
+{{ confirmation_link }}
+
+With best wishes,
+
+The OpenAgua team

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<p>{{ ("Please use the following link to reset your password:") }}</p>
+
+<p><a href="{{ reset_link }}">{{ reset_link }}</a></p>
+
+<p>{{ ("If you did not request this, don't worry, you can safely ignore this email and enjoy the rest of your day.") }}</p>
+
+<br/>
+
+{% endblock %}

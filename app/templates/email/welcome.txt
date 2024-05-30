@@ -1,0 +1,13 @@
+Hello,
+
+Greetings, and welcome to OpenAgua!
+
+To complete your registration, please confirm your email using the link below:
+
+{{ confirmation_link }}
+
+If you did not register with us, please simply ignore this email.
+
+With best wishes,
+
+The OpenAgua team

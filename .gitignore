@@ -167,3 +167,5 @@ cython_debug/
 secrets/
 
 *.db
+
+.DS_Store

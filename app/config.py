@@ -26,6 +26,7 @@ class Config:
     # For key generation, use `from cryptography.fernet import Fernet`, `key = Fernet.generate_key()`
     SECRET_ENCRYPT_KEY = getenv('SECRET_ENCRYPT_KEY', 'another key')
     DEFAULT_DATABASE_URI = 'sqlite:///{}/openagua.sqlite'.format(DATA_DIR)
+
     DATABASE_URI = getenv('DATABASE_URI', DEFAULT_DATABASE_URI)
 
     KEYS_DIR = INSTANCE_DIR
@@ -148,6 +149,11 @@ class Config:
     RABBITMQ_VHOST = getenv('RABBITMQ_VHOST')
 
     def __init__(self, mode=None):
+
+        # Set up the database SSL certificate
+        DATABASE_SSL_CA = environ.get('DATABASE_SSL_CA')
+        with open('./ca-certificate.crt', 'w') as f:
+            f.write(DATABASE_SSL_CA)
 
         # This will override any default values
 

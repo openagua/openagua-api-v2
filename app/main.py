@@ -15,8 +15,7 @@ from app.routers import (
 app = FastAPI(
     title='OpenAgua API',
     description='This API provides the core API for the OpenAgua app.',
-    version='0.1',
-    root_path='/'
+    version='0.1'
 )
 
 allowed_origins = [

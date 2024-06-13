@@ -83,7 +83,7 @@ async def _delete_user_setting(user_id, key, g=Depends(get_g)):
 
 
 @api.get('/{user_id}/settings')
-def _get_user_settings(user_id, g=Depends(get_g)):
+def _get_user_settings(user_id: int, g=Depends(get_g)):
     if g.current_user.id != user_id:
         raise NotAuthorizedException
     return g.current_user.get_settings()

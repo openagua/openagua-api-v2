@@ -1,6 +1,7 @@
 from os import getenv
 
 from fastapi import FastAPI, Depends
+from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -12,26 +13,27 @@ from app.routers import (
     favorites, dashboards, modelruns, files, data, hydra
 )
 
-app = FastAPI(
-    title='OpenAgua API',
-    description='This API provides the core API for the OpenAgua app.',
-    version='0.1'
-)
-
 allowed_origins = [
-    getenv('CORS_ORIGIN'),
+    getenv('CORS_ORIGIN', '*'),
     'http://localhost',
     'http://localhost:8080',
     'http://localhost:3000'
 ]
 
-app.add_middleware(
+middleware = [Middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     # allow_headers=['Content-Type', 'Authorization', 'X-API-KEY']
+)]
+
+app = FastAPI(
+    title='OpenAgua API',
+    description='This API provides the core API for the OpenAgua app.',
+    version='0.1',
+    middleware=middleware
 )
 
 

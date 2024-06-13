@@ -31,7 +31,7 @@ middleware = [Middleware(
 
 app = FastAPI(
     title='OpenAgua API',
-    description='This API provides the core API for the OpenAgua app.',
+    description='The core API for OpenAgua',
     version='0.1',
     middleware=middleware
 )

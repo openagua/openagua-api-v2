@@ -69,7 +69,7 @@ class UserRoles(Base):
 
 
 class APIKey(Base):
-    __tablename__ = 'api_key'
+    __tablename__ = 'apikey'
     id = Column(String(255), primary_key=True, unique=True)
     user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
 

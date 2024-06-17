@@ -36,7 +36,7 @@ def generate_api_key(db):
         except Exception as err:
             break
 
-    return user_key
+    return user_key, db_key
 
 
 def verify_api_key(db, key):

@@ -5,8 +5,7 @@ from pydantic import HttpUrl
 from app.deps import get_g
 from app.schemas import Database
 
-from app.core.security import generate_api_key
-from app.core.account import get_data_databases, add_database, update_database, remove_database, get_api_keys, \
+from app.core.account import get_data_databases, add_database, update_database, remove_database, add_api_key, get_api_keys, \
     delete_api_key
 
 api = APIRouter(prefix='/accounts', tags=['User account'])
@@ -65,9 +64,9 @@ def _get_api_keys(g=Depends(get_g)):
 
 @api.post('/api_keys', status_code=201)
 def _add_api_key(g=Depends(get_g)):
-    full_token = generate_api_key(g.db)
-    token = full_token.split('.')[0]
-    return dict(token=token, full_token=full_token)
+    api_key = add_api_key(g.db, g.current_user.id)
+    token = api_key.split('.')[0]
+    return dict(token=token, full_token=api_key)
 
 
 @api.delete('/api_keys/{token}', status_code=204)

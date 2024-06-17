@@ -4,6 +4,7 @@ from app.models import DataUser, DataUrl, APIKey
 from app.core.hydra import HydraConnection
 from app.core.utils import decrypt
 from app.core.users import add_dataurl, add_datauser, update_datauser, delete_datauser, get_datauser
+from app.core.security import generate_api_key
 
 
 def get_data_databases(db, user_id, base_url):
@@ -93,6 +94,14 @@ def update_database(db, user_id, **kwargs):
 def remove_database(db, user_id, url):
     dataurl = db.query(DataUrl).filter_by(url=url).first()
     delete_datauser(db, user_id=user_id, dataurl_id=dataurl.id)
+
+
+def add_api_key(db, user_id):
+    user_key, db_key = generate_api_key(db)
+    apikey = APIKey(user_id=user_id, id=db_key)
+    db.add(apikey)
+    db.commit()
+    return user_key
 
 
 def get_api_keys(db, user_id):

@@ -45,7 +45,7 @@ async def homepage() -> str:
     return "Hello, world!"
 
 
-api_prefix = '/api/v2'
+api_prefix = '/v2'
 app.include_router(auth.api, prefix=api_prefix)
 
 protected_routers = [users, accounts, maps, gui, projects, networks, templates, scenarios, dashboards,

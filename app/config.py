@@ -120,8 +120,6 @@ class Config:
     # Charts
     DEFAULT_CHART_RENDERER = 'plotly'
 
-    CORS_ORIGIN = getenv('CORS_ORIGIN')
-
     RECAPTCHA_SITE_KEY = getenv('RECAPTCHA_SITE_KEY')
     RECAPTCHA_SECRET_KEY = getenv('RECAPTCHA_SECRET_KEY')
 

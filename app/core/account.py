@@ -19,8 +19,7 @@ def get_data_databases(db, user_id, base_url):
             {
                 'url': dataurl.url,
                 'userid': datauser.userid,
-                'username': datauser.username,
-                'password': decrypt(datauser.password, env['SECRET_ENCRYPT_KEY'])
+                'username': datauser.username
             }
         )
 

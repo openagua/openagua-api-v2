@@ -13,7 +13,12 @@ from app.routers import (
     favorites, dashboards, modelruns, files, data, hydra
 )
 
-allowed_origins = [getenv('CORS_ORIGIN', '*')]
+allowed_origins = [
+    getenv('CORS_ORIGIN'),
+    'http://localhost',
+    'http://localhost:8080',
+    'http://localhost:3000'
+]
 
 middleware = [Middleware(
     CORSMiddleware,

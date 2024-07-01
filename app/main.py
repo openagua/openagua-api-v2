@@ -36,10 +36,6 @@ app = FastAPI(
     middleware=middleware
 )
 
-
-# TODO: add this to app
-
-
 @app.get('/', tags=['Default'])
 async def homepage() -> str:
     return "Hello, world!"

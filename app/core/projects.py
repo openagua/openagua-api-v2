@@ -214,7 +214,7 @@ def copy_project(hydra, project):
     return ret_project
 
 
-async def prepare_projects_for_client(db, hydra, projects, *args, **kwargs):
+def prepare_projects_for_client(db, hydra, projects, *args, **kwargs):
     kwargs['dataurl_id'] = get_dataurl(db, hydra.url).id
     projects = [prepare_project_for_client(db, hydra, p, *args, **kwargs) for p in projects]
     return projects

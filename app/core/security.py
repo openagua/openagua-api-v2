@@ -63,7 +63,7 @@ def verify_api_key(db, key):
     return user
 
 
-async def get_token_status(db, token, serializer, max_age=None, return_data=False):
+def get_token_status(db, token, serializer, max_age=None, return_data=False):
     """Get the status of a token.
 
     :param token: The token to check
@@ -87,7 +87,7 @@ async def get_token_status(db, token, serializer, max_age=None, return_data=Fals
         invalid = True
 
     if data:
-        user = await get_user(db, data[0])
+        user = get_user(db, data[0])
 
     expired = expired and (user is not None)
 
@@ -187,7 +187,7 @@ async def get_token_status(db, token, serializer, max_age=None, return_data=Fals
 # REGISTRATION
 
 async def register_user(db, email, password, origin=None):
-    user = await add_user(db, email, password)
+    user = add_user(db, email, password)
 
     confirmation_link, token = generate_confirmation_link(user, origin=origin)
     body = dict(user=user, confirmation_link=confirmation_link)
@@ -197,7 +197,7 @@ async def register_user(db, email, password, origin=None):
     return user
 
 
-async def confirm_email_token_status(db, token):
+def confirm_email_token_status(db, token):
     """Returns the expired status, invalid status, and user of a confirmation
     token. For example::
 
@@ -206,7 +206,7 @@ async def confirm_email_token_status(db, token):
     :param token: The confirmation token
     """
     expired, invalid, user, token_data = \
-        await get_token_status(db, token, 'confirm', 'CONFIRM_EMAIL', return_data=True)
+        get_token_status(db, token, 'confirm', 'CONFIRM_EMAIL', return_data=True)
     if not invalid and user:
         user_id, token_email_hash = token_data
         invalid = not verify_hash(token_email_hash, user.email)
@@ -237,7 +237,7 @@ async def send_reset_password_instructions(db, origin, email):
                     'reset_instructions', body)
 
 
-async def reset_password_token_status(db, token):
+def reset_password_token_status(db, token):
     """Returns the expired status, invalid status, and user of a password reset
     token. For example::
 
@@ -245,7 +245,7 @@ async def reset_password_token_status(db, token):
 
     :param token: The password reset token
     """
-    expired, invalid, user, data = await get_token_status(
+    expired, invalid, user, data = get_token_status(
         db, token, 'reset', 'RESET_PASSWORD', return_data=True
     )
     if not invalid:
@@ -269,7 +269,7 @@ async def update_password(db, user_id, hydra_user_id, new_password):
     """
 
     # Update the OpenAgua user
-    user = await get_user(db, user_id)
+    user = get_user(db, user_id)
     user.password = hash_password(new_password).encode()
     db.commit()
 

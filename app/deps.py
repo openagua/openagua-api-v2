@@ -41,13 +41,13 @@ def get_pubnub():
     return None
 
 
-async def authorized_user(request: Request, access_token=None, api_key=None):
+def authorized_user(request: Request, access_token=None, api_key=None):
     db = get_db()
     access_token = access_token or request.cookies.get('access_token')
     api_key = api_key or request.headers.get('X-API-KEY')
     if access_token:
         try:
-            payload = await decode_access_token(access_token)
+            payload = decode_access_token(access_token)
 
         except jwt.ExpiredSignatureError:
             raise HTTPException(401, 'Signature expired')
@@ -68,7 +68,7 @@ async def authorized_user(request: Request, access_token=None, api_key=None):
     return user
 
 
-async def get_g(request: Request, source_id: int = 1, project_id: int = 0, user: str = '', scope: str = '',
+def get_g(request: Request, source_id: int = 1, project_id: int = 0, user: str = '', scope: str = '',
                 public: bool = False, api_key=Security(api_key_header)):
     """
     The purpose of this is to return a Flask-like "g" object to attach arbitrary objects to (e.g., db, current_user, etc.)
@@ -78,7 +78,7 @@ async def get_g(request: Request, source_id: int = 1, project_id: int = 0, user:
     db = get_db()
 
     access_token = request.cookies.get('access_token')
-    current_user = await authorized_user(request, access_token, api_key=api_key)
+    current_user = authorized_user(request, access_token, api_key=api_key)
 
     g = AppSession(db=db, current_user=current_user)
 

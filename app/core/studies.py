@@ -31,7 +31,7 @@ def delete_studies(db, userid, network_id):
 def delete_study(db, **kwargs):
     study = get_study(db, **kwargs)
     if study:
-        study.delete()
+        db.delete(study)
         db.commit()
 
 
@@ -39,12 +39,12 @@ def get_study(db, **kwargs):
     user_id = kwargs.get('user_id')
     study_id = kwargs.get('id')
     project_id = kwargs.get('project_id')
-    # datauser_id = kwargs.get('datauser_id')
     dataurl_id = kwargs.get('dataurl_id')
     url = kwargs.get('url')
 
+    study = None
+
     if study_id:
-        study_id = kwargs['id']
         study = db.query(Study).filter_by(id=study_id).first()
 
     elif project_id:
@@ -53,30 +53,16 @@ def get_study(db, **kwargs):
             dataurl_id = dataurl.id
         if dataurl_id:
             studies = db.query(Study).filter_by(project_id=project_id, dataurl_id=dataurl_id).all()
-            if not studies:
-                datausers = get_datausers(db, dataurl_id=dataurl_id)
-                datauser_ids = [datauser.id for datauser in datausers]
-                try:
-                    studies = db.query(Study).filter(Study.project_id == project_id,
-                                                     Study.datauser_id.in_(datauser_ids)).all() if datauser_ids else []
-                except:
-                    studies = []
-                if not studies:
-                    study = add_study(db, created_by=user_id, project_id=project_id, dataurl_id=dataurl_id)
-                else:
-                    for i, s in enumerate(studies):
-                        if i == 0:
-                            s.created_by = user_id
-                            s.dataurl_id = dataurl_id
-                            study = s
-                        else:
-                            db.delete(study)
-                    db.commit()
+            if studies:
+                study = studies.pop()
             else:
-                study = studies[0]
+                study = add_study(db, created_by=user_id, project_id=project_id, dataurl_id=dataurl_id)
 
-    else:
-        study = None
+            if studies:
+                # clean up erroneously added studies
+                for i, s in enumerate(studies):
+                    db.delete(s)
+                db.commit()
 
     return study
 

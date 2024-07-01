@@ -92,7 +92,7 @@ def get_active_network_model(db, dataurl_id, network_id):
 
 
 def get_models(db, dataurl_id=None, engine_ids=None, project_id=None, network_ids=None, scope='public', user_id=None):
-    study = get_study(db, user_id=user_id, dataurl_id=dataurl_id, project_id=project_id)
+    # study = get_study(db, user_id=user_id, dataurl_id=dataurl_id, project_id=project_id)
     # if project_id is not None and network_ids is not None:
     #     network_models = db.query(NetworkModel).filter_by(dataurl_id=dataurl_id).filter(
     #         NetworkModel.network_id.in_(network_ids)).all() if network_ids else []
@@ -100,6 +100,7 @@ def get_models(db, dataurl_id=None, engine_ids=None, project_id=None, network_id
     #     models = db.query(Model).filter(Model.id.in_(engine_ids)) if engine_ids else []
     # elif project_id:
     if project_id:
+        study = get_study(db, user_id=user_id, dataurl_id=dataurl_id, project_id=project_id)
         models = db.query(Model).filter_by(study_id=study.id).all()
     elif engine_ids is not None:
         models = db.query(Model).filter(Model.id.in_(engine_ids)).all() if engine_ids else []

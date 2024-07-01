@@ -103,7 +103,7 @@ def verify_password(password, hashed_password):
     return pwd_context.verify(password, hashed_password)
 
 
-async def create_access_token(email: str):
+def create_access_token(email: str):
     payload = {
         'exp': dt.datetime.utcnow() + dt.timedelta(minutes=15),
         'iat': dt.datetime.utcnow(),
@@ -112,7 +112,7 @@ async def create_access_token(email: str):
     return jwt.encode(payload, SECRET_KEY, algorithm=ACCESS_KEY_ENCRYPT_ALGORITHM)
 
 
-async def create_refresh_token(email: str):
+def create_refresh_token(email: str):
     payload = {
         'exp': dt.datetime.utcnow() + dt.timedelta(days=7),
         'sub': email
@@ -120,11 +120,11 @@ async def create_refresh_token(email: str):
     return jwt.encode(payload, SECRET_KEY, algorithm=ACCESS_KEY_ENCRYPT_ALGORITHM)
 
 
-async def decode_access_token(token: str) -> dict:
+def decode_access_token(token: str) -> dict:
     return jwt.decode(token, SECRET_KEY, algorithms=ACCESS_KEY_ENCRYPT_ALGORITHM)
 
 
-async def decode_refresh_token(token: str) -> dict:
+def decode_refresh_token(token: str) -> dict:
     return jwt.decode(token, SECRET_KEY, algorithms=ACCESS_KEY_ENCRYPT_ALGORITHM)
 
 

@@ -41,8 +41,8 @@ async def _login(response: Response, form_data: OAuth2PasswordRequestForm = Depe
         raise LoginException
     if not verify_password(form_data.password, user.password):
         raise LoginException
-    access_token = await create_access_token(user.email)
-    refresh_token = await create_refresh_token(user.email)
+    access_token = create_access_token(user.email)
+    refresh_token = create_refresh_token(user.email)
     response.set_cookie(key="access_token", value=access_token, httponly=True)
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
     return user.to_json(include_id=True)
@@ -73,10 +73,10 @@ async def _verify_token(user=Depends(authorized_user)) -> User:
 async def _refresh_token(request: Request, response: Response, db=Depends(get_db)) -> User:
     try:
         refresh_token = request.cookies.get('refresh_token')
-        payload = await decode_refresh_token(refresh_token)
+        payload = decode_refresh_token(refresh_token)
         user = get_user_by_email(db, payload['sub'])
-        access_token = await create_access_token(user.email)
-        refresh_token = await create_refresh_token(user.email)
+        access_token = create_access_token(user.email)
+        refresh_token = create_refresh_token(user.email)
         response.set_cookie(key="access_token", value=access_token, secure=True, httponly=True)
         response.set_cookie(key="refresh_token", value=refresh_token, secure=True, httponly=True)
         return user.to_json(include_id=True)
@@ -107,7 +107,7 @@ async def _register(username: Annotated[EmailStr, Form()], password: Annotated[s
 
 @api.post('/confirm_registration')
 async def _confirm_registration(origin: str, token: str, db=Depends(get_db)):
-    expired, invalid, user = await confirm_email_token_status(db, token)
+    expired, invalid, user = confirm_email_token_status(db, token)
 
     if not user or invalid:
         invalid = True
@@ -136,7 +136,7 @@ async def _create_forgot_password_token(data: PasswordResetRequest, db=Depends(g
 @api.get('/verify_forgot_password_token', status_code=200)
 async def _verify_forgot_password_token(token: str, db=Depends(get_db)):
     try:
-        expired, invalid, user = await reset_password_token_status(db, token)
+        expired, invalid, user = reset_password_token_status(db, token)
         if expired:
             return HTTPException(401, 'Token expired')
         elif invalid:
@@ -151,7 +151,7 @@ async def _verify_forgot_password_token(token: str, db=Depends(get_db)):
 async def _reset_password(data: PasswordReset, db=Depends(get_db)):
     token = data.token
     password = data.password
-    expired, invalid, user = await reset_password_token_status(db, token)
+    expired, invalid, user = reset_password_token_status(db, token)
 
     if invalid:
         raise HTTPException(401, 'Invalid token')
@@ -168,4 +168,4 @@ async def _reset_password(data: PasswordReset, db=Depends(get_db)):
             password=password  # This updates the password on Hydra, not OpenAgua
         )
 
-    update_password(db, user.id, datauser.userid, password)
+    await update_password(db, user.id, datauser.userid, password)

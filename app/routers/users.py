@@ -22,7 +22,7 @@ api = APIRouter(prefix='/users', tags=['Users'])
 async def _get_users(user_id: int, g=Depends(get_g)):
     if user_id != g.current_user.id:
         raise HTTPException(500, 'You cannot get other users.')
-    user = await get_user(g.db, user_id)
+    user = get_user(g.db, user_id)
     return user.to_json(include_id=False)
 
 
@@ -106,11 +106,11 @@ async def _update_user_settings(request: Request, user_id: int, g=Depends(get_g)
 async def _change_password(request: Request, g=Depends(get_g)):
     data = await request.json()
     password = data['password']
-    user = await get_user(g.db, g.current_user.id)
+    user = get_user(g.db, g.current_user.id)
     if not verify_password(password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    result = update_password(g.db, g.current_user.id, g.hydra.user_id, **data)
+    result = await update_password(g.db, g.current_user.id, g.hydra.user_id, **data)
     if result:
         return Response(204)
     else:

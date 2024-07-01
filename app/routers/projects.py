@@ -32,7 +32,7 @@ async def _get_projects(is_public: bool = False, page: int = 0, max_per_page: in
     if 'error' in projects:
         return []
 
-    projects = await prepare_projects_for_client(g.db, g.hydra, projects, g.source_id, user_id, include_models=True)
+    projects = prepare_projects_for_client(g.db, g.hydra, projects, g.source_id, user_id, include_models=True)
 
     return projects
 

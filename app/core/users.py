@@ -9,12 +9,12 @@ from app.core.utils import encrypt, hash_password
 from app.config import config
 
 
-async def get_users(db: Session, user_ids: list):
+def get_users(db: Session, user_ids: list):
     users = db.query(User).filter(User.id.in_(user_ids)).all() if user_ids else []
     return {user.id: user.to_json() for user in users}
 
 
-async def add_user(db: Session, email, password):
+def add_user(db: Session, email, password):
     hashed_password = hash_password(password).encode()
     user = User(email=email, password=hashed_password)
     db.add(user)
@@ -22,7 +22,7 @@ async def add_user(db: Session, email, password):
     return user
 
 
-async def get_user(db: Session, user_id: int):
+def get_user(db: Session, user_id: int):
     user = db.query(User).filter_by(id=user_id).one()
     return user
 

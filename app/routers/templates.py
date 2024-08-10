@@ -18,7 +18,6 @@ def _get_templates(project_id: int | None = None, load_all: bool = True,
     templates = []
     project_template_ids = []
 
-    user_id = g.datauser.userid
     is_public_user = g.is_public_user
 
     if project_id or template_ids:
@@ -50,6 +49,7 @@ def _get_templates(project_id: int | None = None, load_all: bool = True,
     elif is_public_user:
         templates = g.hydra.call('get_templates', uid=g.hydra.user_id, public_only=True, load_all=load_all)
         if exclude_user:
+            user_id = g.datauser.userid
             templates = [t for t in templates if not any(o for o in t['owners'] if o['user_id'] == user_id)]
 
     else:
@@ -57,6 +57,7 @@ def _get_templates(project_id: int | None = None, load_all: bool = True,
         if exclude_public:
             templates = [t for t in templates if not t['is_public']]
         if ownership == 'shared':
+            user_id = g.datauser.userid
             templates = [t for t in templates if not t['created_by'] == user_id]
 
     return templates

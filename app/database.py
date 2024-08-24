@@ -10,8 +10,9 @@ if sql_flavor in ['mysql+pymysql', 'postgresql']:
     # TODO: Figure out what these numbers should really be, and make them variables based on infrastructure.
     engine = create_engine(
         DATABASE_URI,
-        pool_size=30,
-        max_overflow=20
+        pool_size=150,
+        max_overflow=30,
+        pool_recycle=600
     )
 elif sql_flavor == 'sqlite':
     engine = create_engine(DATABASE_URI, connect_args={"check_same_thread": False})

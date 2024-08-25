@@ -1,4 +1,4 @@
-from os import getenv, environ as env
+from os import environ as env
 from os.path import splitext
 
 from fastapi import APIRouter, Depends, Request, HTTPException
@@ -138,7 +138,8 @@ def _update_network(network_id: int, network: Network, g=Depends(get_g)):
 
 
 @api.patch('/networks/{network_id}', status_code=204)
-def _patch_network(network_id, data, g=Depends(get_g)):
+async def _patch_network(network_id: int, request: Request, g=Depends(get_g)):
+    data = await request.json()
     layout = data.get('layout', {})
 
     network = g.hydra.call('get_network', network_id, include_data=False, include_resources=False)
@@ -258,11 +259,20 @@ def _get_preview_url(network_id: int, g=Depends(get_g)) -> HttpUrl:
         network=network,
         filename='.thumbnail/preview.svg',
         contents=svg,
-        location=getenv('NETWORK_FILES_STORAGE_LOCATION'),
+        location=config.NETWORK_FILES_STORAGE_LOCATION,
         s3=s3,
         bucket_name=config.AWS_S3_BUCKET
     )
     return url
+
+
+@api.get('/networks/{network_id}/preview_svg')
+def _get_preview_svg(network_id: int, g=Depends(get_g)) -> str:
+    network = g.hydra.call('get_network', network_id, summary=True, include_resources=True)
+    template_id = network['layout'].get('active_template_id')
+    template = template_id and g.hydra.call('get_template', template_id)
+    svg = make_network_thumbnail(network, template)
+    return svg
 
 
 # @api.route('/networks/{network_id}/reference_layers')
